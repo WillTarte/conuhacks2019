@@ -4,6 +4,8 @@ import java.awt.Shape;
 
 public class Entity {
 	
+	static int num_entities = 0;
+	
 	private double x, y;
 	
 	private String id;
@@ -19,5 +21,6 @@ public class Entity {
 		this.id = id;
 		this.velocity = velocity;
 		this.collision_rectangle = collision_rectangle;
+		Entity.num_entities++;
 	}
 }
