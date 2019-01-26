@@ -3,9 +3,13 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
+
+import app.main.entities.Car;
+import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
 
@@ -53,6 +57,9 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	
+	Car car = new Car(100, 100, 50, 50, "abc", new Vector(0,0), new Rectangle(50, 50, 20, 20));
+	
+	
 	@Override
 	public void run() {
 		
@@ -79,19 +86,20 @@ public class Game extends Canvas implements Runnable{
 			
 			
 			render();
+			
 			fps++;
 			
 		}
 		stopGame();
 	}
 	
-	public void tick() {
+	private void tick() {
 		
 		// GAME LOGIC GOES HERE
 		
 	}
 	
-	public void render() {
+	private void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null) {
 			createBufferStrategy(2);
@@ -103,6 +111,7 @@ public class Game extends Canvas implements Runnable{
 		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		
 		// RENDER CODE GOES HERE
+		this.car.render(g);
 		
 		g.dispose();
 		bs.show();

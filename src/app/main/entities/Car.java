@@ -1,5 +1,8 @@
 package app.main.entities;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Shape;
 
 import app.main.utils.Vector;
@@ -15,8 +18,14 @@ public class Car extends Entity{
 		this.armor = armor;
 	}
 
-	public void Update() {
+	public void update() {
 		return;
+	}
+	
+	public void render(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setColor(Color.BLACK);
+		g2d.draw(this.rect);
 	}
 	
 }
