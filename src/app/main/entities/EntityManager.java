@@ -1,8 +1,9 @@
 package app.main.entities;
 
+import java.awt.Graphics;
 import java.util.HashMap;
 
-import javax.swing.text.html.parser.Entity;
+import app.main.entities.Entity;
 
 public class EntityManager {
 	
@@ -16,6 +17,16 @@ public class EntityManager {
 		for(String eID : entityMap.keySet())
 			if(entityMap.get(eID) == ent)
 				entityMap.remove(eID);
+	}
+	
+	public void render(Graphics g) {
+		for(String eID : entityMap.keySet())
+			entityMap.get(eID).render(g);
+	}
+	
+	public void update() {
+		for(String eID : entityMap.keySet())
+			entityMap.get(eID).update();
 	}
 	
 	

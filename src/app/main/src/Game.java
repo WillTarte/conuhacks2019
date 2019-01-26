@@ -9,6 +9,8 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 import app.main.entities.Car;
+import app.main.entities.Entity;
+import app.main.entities.EntityManager;
 import app.main.utils.Input;
 import app.main.utils.Vector;
 
@@ -20,9 +22,11 @@ public class Game extends Canvas implements Runnable{
 	
 	private static final int TICKS_PER_SEC = 60;
 	
-	private static JFrame frame;
+	public static JFrame frame;
 	private static Thread gameThread;
 	private static boolean running = false;
+	
+	private EntityManager em = new EntityManager();
 	
 	public static void main(String[] args) {
 		
@@ -66,12 +70,15 @@ public class Game extends Canvas implements Runnable{
 	@Override
 	public void run() {
 		
-		Input input = new Input();
+		em.register(car.getId(), car);
+		Input input = new Input(car);
 		this.addMouseListener(input);
 		this.addKeyListener(input);
 		int fps = 0, ticks = 0;
 		long lastTick = System.nanoTime();
 		long lastTime = System.nanoTime();
+		
+		
 		while(running) {
 			
 			// EVERY TICK
@@ -106,6 +113,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	private void render() {
+		
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null) {
 			createBufferStrategy(2);
@@ -117,7 +125,7 @@ public class Game extends Canvas implements Runnable{
 		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		
 		// RENDER CODE GOES HERE
-		this.car.render(g);
+		this.em.render(g);
 		
 		g.dispose();
 		bs.show();
