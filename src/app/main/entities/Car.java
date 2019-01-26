@@ -68,4 +68,12 @@ public class Car extends Entity{
 	public void setVelocity(float vel) {
 		this.velocity = vel;
 	}
+	
+	public int getHP() {
+		return this.hitpoints;
+	}
+	
+	public void damage(int dmg) {
+		this.hitpoints -= dmg;
+	}
 }

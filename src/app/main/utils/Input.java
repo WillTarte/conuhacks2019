@@ -22,7 +22,6 @@ public class Input implements KeyListener, MouseListener{
 		//right arrow: 39
 		//down arrow 40
 		int code = arg0.getKeyCode();
-		System.out.println(code);
 		if(code == 38) {
 			player.setVelocity(1);
 		}
@@ -46,7 +45,6 @@ public class Input implements KeyListener, MouseListener{
 		//right arrow: 39
 		//down arrow 40
 		int code = arg0.getKeyCode();
-		System.out.println(code);
 		if(code == 38) {
 			player.setVelocity(0);
 		}

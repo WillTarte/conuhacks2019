@@ -8,7 +8,7 @@ import app.main.entities.Entity;
 public class EntityManager {
 	
 	private HashMap<String, Entity> entityMap = new HashMap<String, Entity>();
-	private Entity player;
+	private Car player;
 	
 	public void register(String id, Entity ent) {
 		entityMap.put(id, ent);
@@ -32,11 +32,11 @@ public class EntityManager {
 			entityMap.get(eID).update();
 	}
 	
-	public void setPlayer(Entity p) {
+	public void setPlayer(Car p) {
 		this.player = p;
 	}
 	
-	public Entity getPlayer() {
+	public Car getPlayer() {
 		return this.player;
 	}
 	

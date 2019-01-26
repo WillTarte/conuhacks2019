@@ -4,6 +4,7 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import app.main.entities.Entity;
 import app.main.entities.EntityManager;
 import app.main.utils.Input;
 import app.main.utils.Maths;
+import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
 	
@@ -104,12 +106,20 @@ public class Game extends Canvas implements Runnable{
 	private void tick() {
 		
 		HashMap<String, Entity> map = em.getEntityMap();
-		for(String id:map.keySet())
+		for(String id:map.keySet()) 
 			if(map.get(id).getType() == 0) {
-				Area a = new Area(map.get(id).getShape());
-				a.intersect(new Area(em.getPlayer().getShape()));
-				if (a.isEmpty())
-					System.out.println("Collision");
+				Polygon obstacle = map.get(id).getShape();
+				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
+				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
+				Area a = new Area(obstacle);
+			
+				Polygon player = em.getPlayer().getShape();
+				Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
+				player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
+				a.intersect(new Area(player));
+				if (!a.isEmpty()) {
+					em.getPlayer().setVelocity(-0.1f);
+				}
 			}
 		
 		em.update();
@@ -141,7 +151,7 @@ public class Game extends Canvas implements Runnable{
 	private void init() {
 		//load levels here
 		
-		Car car = new Car(100, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
+		Car car = new Car(2000, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
 		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
 		Input input = new Input(car);
 		this.addMouseListener(input);

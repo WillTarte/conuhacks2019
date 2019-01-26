@@ -88,7 +88,8 @@ public abstract class Entity {
 	}
 	
 	public Polygon getShape() {
-		return this.rect;
+		
+		return new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 	}
 
 }
