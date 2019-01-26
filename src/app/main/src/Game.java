@@ -9,6 +9,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
 import app.main.entities.Car;
+import app.main.utils.Input;
 import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
@@ -25,7 +26,11 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void main(String[] args) {
 		
+		Input input = new Input();
+		
 		frame = Display.create(1280, 720, "This is a game");
+		frame.addKeyListener(input);
+		frame.addMouseListener(input);
 		
 		Game g = new Game();
 		frame.add(g);

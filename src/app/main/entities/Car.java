@@ -19,6 +19,8 @@ public class Car extends Entity{
 	}
 
 	public void update() {
+		
+		
 		return;
 	}
 	
