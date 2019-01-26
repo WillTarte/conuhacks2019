@@ -4,15 +4,17 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
 import app.main.entities.Car;
+import app.main.entities.Entity;
 import app.main.entities.EntityManager;
 import app.main.utils.Input;
 import app.main.utils.Maths;
-import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
 	
@@ -62,15 +64,13 @@ public class Game extends Canvas implements Runnable{
 	
 	
 	EntityManager em = new EntityManager();
-	Car car = new Car(100, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 60.0f));
+	
 	
 	
 	@Override
 	public void run() {
-		em.register(car.getId(), car);
-		Input input = new Input(car);
-		this.addMouseListener(input);
-		this.addKeyListener(input);
+		init();
+		
 		int fps = 0, ticks = 0;
 		long lastTick = System.nanoTime();
 		long lastTime = System.nanoTime();
@@ -103,7 +103,17 @@ public class Game extends Canvas implements Runnable{
 	
 	private void tick() {
 		
+		HashMap<String, Entity> map = em.getEntityMap();
+		for(String id:map.keySet())
+			if(map.get(id).getType() == 0) {
+				Area a = new Area(map.get(id).getShape());
+				a.intersect(new Area(em.getPlayer().getShape()));
+				if (a.isEmpty())
+					System.out.println("Collision");
+			}
+		
 		em.update();
+		
 		
 		// GAME LOGIC GOES HERE
 		
@@ -121,10 +131,24 @@ public class Game extends Canvas implements Runnable{
 		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		
 		// RENDER CODE GOES HERE
-		this.car.render(g);
+		this.em.render(g);
 		
 		g.dispose();
 		bs.show();
+		
+	}
+	
+	private void init() {
+		//load levels here
+		
+		Car car = new Car(100, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
+		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
+		Input input = new Input(car);
+		this.addMouseListener(input);
+		this.addKeyListener(input);
+		em.setPlayer(car);
+		em.register(box.getId(), box);
+		
 		
 	}
 }

@@ -8,6 +8,7 @@ import app.main.entities.Entity;
 public class EntityManager {
 	
 	private HashMap<String, Entity> entityMap = new HashMap<String, Entity>();
+	private Entity player;
 	
 	public void register(String id, Entity ent) {
 		entityMap.put(id, ent);
@@ -20,14 +21,27 @@ public class EntityManager {
 	}
 	
 	public void render(Graphics g) {
+		player.render(g);
 		for(String eID : entityMap.keySet())
 			entityMap.get(eID).render(g);
 	}
 	
 	public void update() {
+		player.update();
 		for(String eID : entityMap.keySet())
 			entityMap.get(eID).update();
 	}
 	
+	public void setPlayer(Entity p) {
+		this.player = p;
+	}
+	
+	public Entity getPlayer() {
+		return this.player;
+	}
+	
+	public HashMap<String, Entity> getEntityMap(){
+		return this.entityMap;
+	}
 	
 }

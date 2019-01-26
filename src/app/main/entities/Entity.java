@@ -15,16 +15,21 @@ public abstract class Entity {
 	
 	protected Polygon rect;
 	
+	//0-obstacles
+	//1-player
+	//2-pickups
+	private int type;
 	
 	
-	public Entity(double x, double y, String id, Polygon rect) {
+	
+	public Entity(int type, double x, double y, String id, Polygon rect) {
 		this.pos = new Vector(x, y);
 		this.id = id;
 		this.rect = rect;
 		Entity.num_entities++;
 	}
 	
-	public Entity(double x, double y, Polygon rect) {
+	public Entity(int type, double x, double y, Polygon rect) {
 		
 		this.pos = new Vector(x, y);
 		this.id = java.util.UUID.randomUUID().toString().split("-")[0];
@@ -76,6 +81,14 @@ public abstract class Entity {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public int getType() {
+		return this.type;
+	}
+	
+	public Polygon getShape() {
+		return this.rect;
 	}
 
 }

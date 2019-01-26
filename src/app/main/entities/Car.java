@@ -24,12 +24,12 @@ public class Car extends Entity{
 	private final static float speed = 0.005f;
 	
 	public Car(int hp, int armor, double x, double y, String id, Polygon rect) {
-		super(x, y, id, rect);
+		super(1, x, y, id, rect);
 		this.hitpoints = hp;
 		this.armor = armor;
 		this.scale = 30.0f;
 		this.theta = 0.0f;
-		this.rect = Maths.generateFromAngle(theta, scale);
+		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 		this.rotationVelocity = 0;
 		this.velocity = 0.0f;
 	}
@@ -37,7 +37,7 @@ public class Car extends Entity{
 	public void update() {
 		this.setRotation(this.theta + this.rotationVelocity);
 		this.pos = Vector.add(this.pos, Vector.scale(velocity * speed, new Vector(Math.sin(theta+Math.PI/2), Math.cos(theta+Math.PI/2))));
-		this.rect = Maths.generateFromAngle(theta, scale);
+		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 	}
 	
 	public void render(Graphics g) {
