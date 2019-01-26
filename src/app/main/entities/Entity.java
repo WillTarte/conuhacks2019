@@ -1,7 +1,7 @@
 package app.main.entities;
 
 import java.awt.Graphics;
-import java.awt.Shape;
+import java.awt.Polygon;
 
 import app.main.utils.Vector;
 
@@ -15,10 +15,11 @@ public abstract class Entity {
 	
 	protected Vector velocity;
 	
-	protected Shape rect;
+	protected Polygon rect;
 	
 	
-	public Entity(double x, double y, String id, Vector velocity, Shape rect) {
+	
+	public Entity(double x, double y, String id, Vector velocity, Polygon rect) {
 		this.pos = new Vector(x, y);
 		this.id = id;
 		this.velocity = velocity;

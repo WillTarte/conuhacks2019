@@ -3,7 +3,8 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Polygon;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
@@ -29,9 +30,11 @@ public class Game extends Canvas implements Runnable{
 		Input input = new Input();
 		
 		frame = Display.create(1280, 720, "This is a game");
-		frame.addKeyListener(input);
-		frame.addMouseListener(input);
 		
+		frame.addKeyListener(input);
+		//frame.addMouseListener(input);
+		frame.addMouseListener((MouseListener) input);
+			
 		Game g = new Game();
 		frame.add(g);
 		
@@ -62,7 +65,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	
-	Car car = new Car(100, 100, 50, 50, "abc", new Vector(0,0), new Rectangle(50, 50, 20, 20));
+	Car car = new Car(100, 100, 50, 50, "abc", new Vector(0,0), new Polygon(new int[] {-5, 5, -5, 5}, new int[] {5, 5, -5, -5}, 4));
 	
 	
 	@Override

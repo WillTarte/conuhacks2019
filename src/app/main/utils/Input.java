@@ -46,7 +46,7 @@ public class Input implements KeyListener, MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		System.out.println(arg0.getX() +"," + arg0.getY());
+		System.out.println(arg0.getX() + ", " + arg0.getY());
 		
 	}
 
