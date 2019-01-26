@@ -12,6 +12,8 @@ public class Car extends Entity{
 	
 	private int hitpoints;
 	private int armor;
+	private Vector forward;
+	
 	
 	private float scale;
 	private float theta;
@@ -30,6 +32,7 @@ public class Car extends Entity{
 	}
 	
 	public void render(Graphics g) {
+		//Implement switching from OUR coordinates to the frame's coordinates
 		Graphics2D g2d = (Graphics2D)g;
 		
 		g2d.setColor(Color.BLACK);

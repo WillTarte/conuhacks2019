@@ -24,11 +24,6 @@ public class Maths {
 		Vector bottomRight = Vector.add(Vector.sub(new Vector(), Vector.scale(scale, dir)), Vector.scale(scale / 2, perpDir));
 		Vector bottomLeft = Vector.sub(Vector.sub(new Vector(), Vector.scale(scale, dir)), Vector.scale(scale / 2, perpDir));
 	
-		System.out.println(topRight);
-		System.out.println(topLeft);
-		System.out.println(bottomRight);
-		System.out.println(bottomLeft);
-		
 		return new Polygon(
 				new int[] {(int)topLeft.getX(), (int)topRight.getX(), (int)bottomRight.getX(), (int)bottomLeft.getX()},
 				new int[] {(int)topLeft.getY(), (int)topRight.getY(), (int)bottomRight.getY(), (int)bottomLeft.getY()}, 4);

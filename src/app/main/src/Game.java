@@ -1,3 +1,4 @@
+
 package app.main.src;
 
 import java.awt.Canvas;
@@ -66,6 +67,7 @@ public class Game extends Canvas implements Runnable{
 	
 	@Override
 	public void run() {
+		em.register(car.getId(), car);
 		Input input = new Input(car);
 		this.addMouseListener(input);
 		this.addKeyListener(input);
@@ -101,6 +103,7 @@ public class Game extends Canvas implements Runnable{
 	
 	private void tick() {
 		
+		em.update();
 		car.setRotation(car.getRotation() + 0.03f);
 		// GAME LOGIC GOES HERE
 		
