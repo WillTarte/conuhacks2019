@@ -13,16 +13,13 @@ public abstract class Entity {
 	
 	private String id;
 	
-	protected Vector velocity;
-	
 	protected Polygon rect;
 	
 	
 	
-	public Entity(double x, double y, String id, Vector velocity, Polygon rect) {
+	public Entity(double x, double y, String id, Polygon rect) {
 		this.pos = new Vector(x, y);
 		this.id = id;
-		this.velocity = velocity;
 		this.rect = rect;
 		Entity.num_entities++;
 	}
@@ -73,17 +70,4 @@ public abstract class Entity {
 		this.id = id;
 	}
 
-	/**
-	 * @return the velocity
-	 */
-	public Vector getVelocity() {
-		return velocity;
-	}
-
-	/**
-	 * @param velocity the velocity to set
-	 */
-	public void setVelocity(Vector velocity) {
-		this.velocity = velocity;
-	}
 }

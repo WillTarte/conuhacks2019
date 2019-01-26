@@ -24,10 +24,10 @@ public class Input implements KeyListener, MouseListener{
 		int code = arg0.getKeyCode();
 		System.out.println(code);
 		if(code == 38) {
-			player.setVelocity(new Vector(Math.sin(player.getRotation()+Math.PI/2), Math.cos(player.getRotation()+Math.PI/2)));
+			player.setVelocity(1);
 		}
 		else if(code == 40){
-			player.setVelocity(new Vector(-Math.sin(player.getRotation()+Math.PI/2), -Math.cos(player.getRotation()+Math.PI/2)));
+			player.setVelocity(-1);
 		}
 		else if(code == 39) {
 			player.setRotationVelocity(0.03f);
@@ -48,10 +48,10 @@ public class Input implements KeyListener, MouseListener{
 		int code = arg0.getKeyCode();
 		System.out.println(code);
 		if(code == 38) {
-			player.setVelocity(new Vector());
+			player.setVelocity(0);
 		}
 		else if(code == 40){
-			player.setVelocity(new Vector());
+			player.setVelocity(0);
 			
 		}
 		else if(code == 39) {

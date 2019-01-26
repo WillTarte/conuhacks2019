@@ -62,7 +62,7 @@ public class Game extends Canvas implements Runnable{
 	
 	
 	EntityManager em = new EntityManager();
-	Car car = new Car(100, 100, 0, 0, "abc", new Vector(0,0), Maths.generateFromAngle((float)Math.PI / 4, 60.0f));
+	Car car = new Car(100, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 60.0f));
 	
 	
 	@Override
