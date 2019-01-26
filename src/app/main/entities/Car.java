@@ -2,6 +2,8 @@ package app.main.entities;
 
 import java.awt.Shape;
 
+import app.main.utils.Vector;
+
 public class Car extends Entity{
 	
 	private int hitpoints;
