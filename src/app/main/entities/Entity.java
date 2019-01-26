@@ -13,16 +13,26 @@ public abstract class Entity {
 	
 	private String id;
 	
-	protected Vector velocity;
-	
 	protected Polygon rect;
 	
+	//0-obstacles
+	//1-player
+	//2-pickups
+	private int type;
 	
 	
-	public Entity(double x, double y, String id, Vector velocity, Polygon rect) {
+	
+	public Entity(int type, double x, double y, String id, Polygon rect) {
 		this.pos = new Vector(x, y);
 		this.id = id;
-		this.velocity = velocity;
+		this.rect = rect;
+		Entity.num_entities++;
+	}
+	
+	public Entity(int type, double x, double y, Polygon rect) {
+		
+		this.pos = new Vector(x, y);
+		this.id = java.util.UUID.randomUUID().toString().split("-")[0];
 		this.rect = rect;
 		Entity.num_entities++;
 	}
@@ -72,18 +82,14 @@ public abstract class Entity {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	/**
-	 * @return the velocity
-	 */
-	public Vector getVelocity() {
-		return velocity;
+	
+	public int getType() {
+		return this.type;
+	}
+	
+	public Polygon getShape() {
+		
+		return new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 	}
 
-	/**
-	 * @param velocity the velocity to set
-	 */
-	public void setVelocity(Vector velocity) {
-		this.velocity = velocity;
-	}
 }

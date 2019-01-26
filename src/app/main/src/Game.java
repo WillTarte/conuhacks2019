@@ -4,18 +4,22 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
+import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
 import app.main.entities.Car;
+import app.main.entities.Entity;
 import app.main.entities.EntityManager;
 import app.main.utils.Input;
 import app.main.utils.Maths;
 import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
-
+	
 	// FUCKING ECLIPSE GETS TRIGGERED IF YOU DONT HAVE THIS
 	private static final long serialVersionUID = 1L;
 	
@@ -27,7 +31,7 @@ public class Game extends Canvas implements Runnable{
 	private static boolean running = false;
 	
 	public static void main(String[] args) {
-	
+		
 		frame = Display.create(1280, 720, "This is a game");
 		
 			
@@ -62,15 +66,13 @@ public class Game extends Canvas implements Runnable{
 	
 	
 	EntityManager em = new EntityManager();
-	Car car = new Car(100, 100, 0, 0, "abc", new Vector(0,0), Maths.generateFromAngle((float)Math.PI / 4, 60.0f));
+	
 	
 	
 	@Override
 	public void run() {
-		em.register(car.getId(), car);
-		Input input = new Input(car);
-		this.addMouseListener(input);
-		this.addKeyListener(input);
+		init();
+		
 		int fps = 0, ticks = 0;
 		long lastTick = System.nanoTime();
 		long lastTime = System.nanoTime();
@@ -103,8 +105,26 @@ public class Game extends Canvas implements Runnable{
 	
 	private void tick() {
 		
+		HashMap<String, Entity> map = em.getEntityMap();
+		for(String id:map.keySet()) 
+			if(map.get(id).getType() == 0) {
+				Polygon obstacle = map.get(id).getShape();
+				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
+				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
+				Area a = new Area(obstacle);
+			
+				Polygon player = em.getPlayer().getShape();
+				Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
+				player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
+				a.intersect(new Area(player));
+				if (!a.isEmpty()) {
+					em.getPlayer().setVelocity(-0.1f);
+				}
+			}
+		
 		em.update();
-		car.setRotation(car.getRotation() + 0.03f);
+		
+		
 		// GAME LOGIC GOES HERE
 		
 	}
@@ -121,10 +141,24 @@ public class Game extends Canvas implements Runnable{
 		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
 		
 		// RENDER CODE GOES HERE
-		this.car.render(g);
+		this.em.render(g);
 		
 		g.dispose();
 		bs.show();
+		
+	}
+	
+	private void init() {
+		//load levels here
+		
+		Car car = new Car(2000, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
+		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
+		Input input = new Input(car);
+		this.addMouseListener(input);
+		this.addKeyListener(input);
+		em.setPlayer(car);
+		em.register(box.getId(), box);
+		
 		
 	}
 }
