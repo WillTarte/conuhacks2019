@@ -5,12 +5,20 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import app.main.entities.Car;
+
 public class Input implements KeyListener, MouseListener{
 	
+	private Car player;
+	
+	public Input(Car player) {
+		this.player = player;
+	}
 	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		System.out.println(arg0.getKeyCode());
+		
+		
 		
 	}
 
