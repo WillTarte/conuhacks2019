@@ -15,7 +15,7 @@ import app.main.utils.Maths;
 import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
-
+	
 	// FUCKING ECLIPSE GETS TRIGGERED IF YOU DONT HAVE THIS
 	private static final long serialVersionUID = 1L;
 	
@@ -27,7 +27,7 @@ public class Game extends Canvas implements Runnable{
 	private static boolean running = false;
 	
 	public static void main(String[] args) {
-	
+		
 		frame = Display.create(1280, 720, "This is a game");
 		
 			

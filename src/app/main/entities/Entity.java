@@ -24,6 +24,14 @@ public abstract class Entity {
 		Entity.num_entities++;
 	}
 	
+	public Entity(double x, double y, Polygon rect) {
+		
+		this.pos = new Vector(x, y);
+		this.id = java.util.UUID.randomUUID().toString().split("-")[0];
+		this.rect = rect;
+		Entity.num_entities++;
+	}
+	
 	abstract public void update();
 	
 	abstract public void render(Graphics g);
