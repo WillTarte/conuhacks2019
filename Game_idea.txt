@@ -1,0 +1,9 @@
+A 4 person mutliplayer brawl game involving cars and power ups
+
+Each car same model, different colors
+
+You drive around the map finding upgrades/items for the car
+
+Using items or running into other cars causes damage
+
+Last car standing wins
