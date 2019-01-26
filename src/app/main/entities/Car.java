@@ -14,6 +14,9 @@ public class Car extends Entity{
 		this.hitpoints = hp;
 		this.armor = armor;
 	}
-	
+
+	public void Update() {
+		return;
+	}
 	
 }

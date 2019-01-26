@@ -4,7 +4,7 @@ import java.awt.Shape;
 
 import app.main.utils.Vector;
 
-public class Entity {
+public abstract class Entity {
 	
 	static int num_entities = 0;
 	
@@ -25,4 +25,6 @@ public class Entity {
 		this.collision_rectangle = collision_rectangle;
 		Entity.num_entities++;
 	}
+	
+	abstract protected void Update();
 }
