@@ -26,11 +26,9 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void main(String[] args) {
 		
-		Input input = new Input();
+		
 		
 		frame = Display.create(1280, 720, "This is a game");
-		frame.addKeyListener(input);
-		frame.addMouseListener(input);
 		
 		Game g = new Game();
 		frame.add(g);
@@ -68,6 +66,9 @@ public class Game extends Canvas implements Runnable{
 	@Override
 	public void run() {
 		
+		Input input = new Input();
+		this.addMouseListener(input);
+		this.addKeyListener(input);
 		int fps = 0, ticks = 0;
 		long lastTick = System.nanoTime();
 		long lastTime = System.nanoTime();
