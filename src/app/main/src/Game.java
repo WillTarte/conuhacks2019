@@ -104,7 +104,7 @@ public class Game extends Canvas implements Runnable{
 	private void tick() {
 		
 		em.update();
-		car.setRotation(car.getRotation() + 0.03f);
+		
 		// GAME LOGIC GOES HERE
 		
 	}

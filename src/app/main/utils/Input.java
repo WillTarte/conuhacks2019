@@ -17,14 +17,49 @@ public class Input implements KeyListener, MouseListener{
 	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		
+		//left arrow: 37
+		//up arrow: 38
+		//right arrow: 39
+		//down arrow 40
+		int code = arg0.getKeyCode();
+		System.out.println(code);
+		if(code == 38) {
+			player.setVelocity(new Vector(Math.sin(player.getRotation()+Math.PI/2), Math.cos(player.getRotation()+Math.PI/2)));
+		}
+		else if(code == 40){
+			player.setVelocity(new Vector(-Math.sin(player.getRotation()+Math.PI/2), -Math.cos(player.getRotation()+Math.PI/2)));
+		}
+		else if(code == 39) {
+			player.setRotationVelocity(0.03f);
+		}
+		else if(code == 37) {
+			player.setRotationVelocity(-0.03f);
+		}
 		
 		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+		//left arrow: 37
+		//up arrow: 38
+		//right arrow: 39
+		//down arrow 40
+		int code = arg0.getKeyCode();
+		System.out.println(code);
+		if(code == 38) {
+			player.setVelocity(new Vector());
+		}
+		else if(code == 40){
+			player.setVelocity(new Vector());
+			
+		}
+		else if(code == 39) {
+			player.setRotationVelocity(0);
+		}
+		else if(code == 37) {
+			player.setRotationVelocity(0);
+		}
 		
 	}
 
