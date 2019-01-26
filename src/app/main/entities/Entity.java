@@ -10,7 +10,7 @@ public class Entity {
 	
 	private String id;
 	
-	private Vector velocity;
+	protected Vector velocity;
 	
 	private Shape collision_rectangle;
 	
