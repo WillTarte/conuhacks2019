@@ -6,6 +6,11 @@ public class Vector {
 	
 	private double y;
 	
+	public Vector() {
+		this.x = 0;
+		this.y = 0;
+	}
+	
 	public Vector(double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -46,7 +51,24 @@ public class Vector {
 		return angle;
 	}
 	
+	public static Vector scale(double scale, Vector vec) {
+		return new Vector(scale * vec.x, scale * vec.y);
+	}
 	
+	public static Vector add(Vector v1, Vector v2) {
+		return new Vector(v1.x + v2.x, v1.y + v2.y);
+	}
 	
-
+	public static Vector sub(Vector v1, Vector v2) {
+		return new Vector(v1.x - v2.x, v1.y - v2.y);
+	}
+	
+	public static double dot(Vector v1, Vector v2) {
+		return v1.x * v2.x + v1.y * v2.y;
+	}
+	
+	@Override
+	public String toString() {
+		return x + ", " + y;
+	}
 }

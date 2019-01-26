@@ -3,14 +3,14 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Polygon;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
 import app.main.entities.Car;
+import app.main.entities.EntityManager;
 import app.main.utils.Input;
+import app.main.utils.Maths;
 import app.main.utils.Vector;
 
 public class Game extends Canvas implements Runnable{
@@ -21,19 +21,14 @@ public class Game extends Canvas implements Runnable{
 	
 	private static final int TICKS_PER_SEC = 60;
 	
-	private static JFrame frame;
+	public static JFrame frame;
 	private static Thread gameThread;
 	private static boolean running = false;
 	
 	public static void main(String[] args) {
-		
-		
-		
+	
 		frame = Display.create(1280, 720, "This is a game");
 		
-		frame.addKeyListener(input);
-		//frame.addMouseListener(input);
-		frame.addMouseListener((MouseListener) input);
 			
 		Game g = new Game();
 		frame.add(g);
@@ -65,13 +60,13 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	
-	Car car = new Car(100, 100, 50, 50, "abc", new Vector(0,0), new Polygon(new int[] {-5, 5, -5, 5}, new int[] {5, 5, -5, -5}, 4));
+	EntityManager em = new EntityManager();
+	Car car = new Car(100, 100, 0, 0, "abc", new Vector(0,0), Maths.generateFromAngle((float)Math.PI / 4, 60.0f));
 	
 	
 	@Override
 	public void run() {
-		
-		Input input = new Input();
+		Input input = new Input(car);
 		this.addMouseListener(input);
 		this.addKeyListener(input);
 		int fps = 0, ticks = 0;
@@ -106,6 +101,7 @@ public class Game extends Canvas implements Runnable{
 	
 	private void tick() {
 		
+		car.setRotation(car.getRotation() + 0.03f);
 		// GAME LOGIC GOES HERE
 		
 	}
