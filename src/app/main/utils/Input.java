@@ -5,14 +5,14 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import app.main.entities.Car;
+import app.main.src.Game;
 
 public class Input implements KeyListener, MouseListener{
 	
-	private Car player;
+	private Game game;
 	
-	public Input(Car player) {
-		this.player = player;
+	public Input(Game game) {
+		this.game = game;
 	}
 	
 	@Override
@@ -23,17 +23,18 @@ public class Input implements KeyListener, MouseListener{
 		//down arrow 40
 		int code = arg0.getKeyCode();
 		if(code == 38) {
-			player.setVelocity(2);
+			game.getPlayer().setVelocity(2);
 		}
 		else if(code == 40){
-			player.setVelocity(-2);
+			game.getPlayer().setVelocity(-2);
 		}
 		else if(code == 39) {
-			player.setRotationVelocity(0.05f);
+			game.getPlayer().setRotationVelocity(0.05f);
 		}
 		else if(code == 37) {
-			player.setRotationVelocity(-0.05f);
-		}
+			game.getPlayer().setRotationVelocity(-0.05f);
+		}else if(code == KeyEvent.VK_R)
+			game.shouldReset();
 		
 		
 	}
@@ -46,17 +47,17 @@ public class Input implements KeyListener, MouseListener{
 		//down arrow 40
 		int code = arg0.getKeyCode();
 		if(code == 38) {
-			player.setVelocity(0);
+			game.getPlayer().setVelocity(0);
 		}
 		else if(code == 40){
-			player.setVelocity(0);
+			game.getPlayer().setVelocity(0);
 			
 		}
 		else if(code == 39) {
-			player.setRotationVelocity(0);
+			game.getPlayer().setRotationVelocity(0);
 		}
 		else if(code == 37) {
-			player.setRotationVelocity(0);
+			game.getPlayer().setRotationVelocity(0);
 		}
 		
 	}

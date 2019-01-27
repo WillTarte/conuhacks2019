@@ -29,5 +29,11 @@ public class Maths {
 				new int[] {(int)topLeft.getY(), (int)topRight.getY(), (int)bottomRight.getY(), (int)bottomLeft.getY()}, 4);
 	}
 	
+	public static Polygon generateHeart(float scale) {
+		return new Polygon(
+				new int[] {(int)(1.6f * scale), (int)(1.0f * scale), (int)(0.4f * scale), 0, (int)(-0.4f * scale), (int)(-1.0f * scale),(int)(-1.6f * scale), (int)(-2.0f * scale),  (int)(-1.5f * scale), 0, (int)(1.5f * scale), (int)(2.0f * scale)},
+				new int[] {(int)(-0.8f * scale), (int)(-1.0f * scale), (int)(-0.8f * scale), 0, (int)(-0.8f * scale), (int)(-1.0f * scale), (int)(-0.8f * scale),  0,  (int)(1.1f * scale), (int)(3.0f * scale), (int)(1.1f * scale), 0}, 12);
+	}
+	
 	
 }

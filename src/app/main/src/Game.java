@@ -4,10 +4,11 @@ package app.main.src;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.RenderingHints;
 import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -17,8 +18,8 @@ import app.main.entities.Boost;
 import app.main.entities.Car;
 import app.main.entities.Entity;
 import app.main.entities.EntityManager;
+import app.main.entities.Obstacle;
 import app.main.network.Client;
-import app.main.network.Packet;
 import app.main.utils.Input;
 import app.main.utils.Maths;
 import app.main.utils.Vector;
@@ -38,7 +39,12 @@ public class Game extends Canvas implements Runnable{
 	
 	private Random rd = new Random();
 	
+	private int boostCount = 0;
+	
 	private int count = 0;
+	
+	private boolean toReset = false;
+	private String [] obsID;
 	
 	public static void main(String[] args) {
 		
@@ -82,9 +88,12 @@ public class Game extends Canvas implements Runnable{
 	
 	@Override
 	public void run() {
+		
+		Input input = new Input(this);
+		this.addMouseListener(input);
+		this.addKeyListener(input);
+		
 		init();
-		
-		
 		
 		int fps = 0, ticks = 0;
 		long lastTick = System.nanoTime();
@@ -104,18 +113,7 @@ public class Game extends Canvas implements Runnable{
 			long currentNet = System.nanoTime();
 			if(currentNet - lastNet >= 1000000000 / NET_PER_SEC) {
 
-				if(client.connected()) {
-					String msg = "e|id=" + em.getPlayer().getId() + 
-							",x=" + Float.toString((float)em.getPlayer().getPos().getX()) + 
-							",y=" + Float.toString((float)em.getPlayer().getPos().getY()) + 
-							",ang=" + Float.toString((float)em.getPlayer().getRotation()) + ";";
-					client.sendPacket(Packet.GAME_UPDATE, msg.getBytes(), false);
-					if(System.currentTimeMillis() - client.lastPacket >= Client.TIMEOUT) {
-						client.connected = false;
-						client.loggedIn = false;
-						System.out.println("Connection to " + client.host.toString() + " timed out.");
-					}
-				}
+				
 				
 				lastNet = currentNet;
 			}
@@ -124,15 +122,6 @@ public class Game extends Canvas implements Runnable{
 			long currentTime = System.nanoTime();
 			if(currentTime - lastTime >= 1000000000) {
 				
-				if(!client.connected)
-					client.connect();
-				else if(!client.loggedIn)
-					client.login();
-				else {
-					client.sendPacket(Packet.PING, null, false);
-					
-					System.out.println("Connected to " + client.host + ":" + client.port + " (" + client.ping + " ms)");
-				}
 				
 				System.out.println("FPS : " + fps + ", TICKS : " + ticks);
 				fps = ticks = 0;
@@ -150,17 +139,30 @@ public class Game extends Canvas implements Runnable{
 	
 	private void tick(int currentTick) {
 		
+		if(toReset) {
+			reset();
+			toReset = false;
+		}
+		
 		HashMap<String, Entity> map = em.getEntityMap();
 		
-		if(currentTick == 0)
+		if(currentTick == 0) {
 			count++;
+			boostCount++;
+		}
 		
 		if(count == 3) {
-			Car ennemy = new Car(100, 100, (rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
-			
+			Car ennemy = new Car(100, (rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f),new Color(139,0,0));
 			em.register(ennemy.getId(), ennemy);
 			count = 0;
 		}
+		
+		if (boostCount == 6) {
+			Boost boost1 = new Boost((rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateHeart(10.0f));
+			em.register(boost1.getId(), boost1);
+			boostCount = 0;
+		}
+		
 	
 		
 		
@@ -241,6 +243,9 @@ public class Game extends Canvas implements Runnable{
 		
 			else if(ent.getType() == 1) {
 				
+				if(ent.getId().equals(playerCar.getId()))
+					break;
+				
 				if(!a.isEmpty()) {
 					playerCar.damage(30);
 					
@@ -253,6 +258,24 @@ public class Game extends Canvas implements Runnable{
 				double angle = diff.getX()<0?-diff.angle()+Math.PI:-diff.angle();				
 				((Car)ent).setRotation((float)angle);
 				((Car)ent).setVelocity(1f);
+				
+				
+				
+				for(int i=0;i<obsID.length;i++)
+				{
+					
+					Area area = new Area(obstacle);
+					
+					Entity wall = map.get(obsID[i]);
+					Polygon wallShape = wall.getShape();
+					Vector sc = Maths.convert2screen(wall.getPos());
+					wallShape.translate((int)sc.getX(), (int)sc.getY());
+					
+					area.intersect(new Area(wallShape));
+					if (!area.isEmpty())
+						ent.setPos(new Vector((rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2));
+					
+				}
 				
 				
 			}
@@ -270,6 +293,9 @@ public class Game extends Canvas implements Runnable{
 			bs = getBufferStrategy();
 		}
 		Graphics g = bs.getDrawGraphics();
+		Graphics2D g2d = (Graphics2D) g;
+
+	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, frame.getWidth(), frame.getHeight());
@@ -294,35 +320,78 @@ public class Game extends Canvas implements Runnable{
 	
 	private void init() {
 		//load levels here
+		genObstacles();
+		Car car = new Car(100, 0, 0, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f),new Color(0,0,139));
 		
-		Car car = new Car(100, 100, 0, 0, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
-		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
-		Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
-		Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
-		Boost boost1 = new Boost(0.2, 0.8, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
-		Boost boost2 = new Boost(0.7, 0.2, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
-		
-		
-		Input input = new Input(car);
-		this.addMouseListener(input);
-		this.addKeyListener(input);
+		boolean flag = false;
+		int count = 0;
+		while(!flag) {
+			for(int i=0;i<obsID.length;i++){
+				
+				Polygon carShape = car.getShape();
+				Vector scCar = Maths.convert2screen(car.getPos());
+				carShape.translate((int)scCar.getX(), (int)scCar.getY());
+				Area area = new Area(car.getShape());
+				
+				Entity wall = em.getEntityMap().get(obsID[i]);
+				Polygon wallShape = wall.getShape();
+				Vector sc = Maths.convert2screen(wall.getPos());
+				wallShape.translate((int)sc.getX(), (int)sc.getY());
+				
+				area.intersect(new Area(wallShape));
+				if (!area.isEmpty()){
+					count++;
+					
+				}
+	
+			}
+			
+			if(count > 0) {
+				car.setPos(new Vector((rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2));
+				count = 0;
+				flag = false;
+			}else
+				flag = true;
+		}
+		//Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
+		//Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
+		//Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
+		Boost boost1 = new Boost((rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateHeart(10.0f));
+		Boost boost2 = new Boost((rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateHeart(10.0f));
 		
 		em.setPlayer(car);
-		em.register(box.getId(), box);
-		em.register(box2.getId(), box2);
-		em.register(box3.getId(), box3);
+		//em.register(box.getId(), box);
+		//em.register(box2.getId(), box2);
+		//em.register(box3.getId(), box3);
 		em.register(boost1.getId(), boost1);
 		em.register(boost2.getId(), boost2);
+	
 
-		
-		
-		try {
-			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	}
+	
+	public Car getPlayer() {
+		return this.em.getPlayer();
+	}
+	
+	public void shouldReset() {
+		this.toReset = true;
+	}
+	
+	private void reset() {
+		this.em.getEntityMap().clear();
+		init();
+	}
+	
+	private void genObstacles() {
+		int num = rd.nextInt(7);
+		obsID = new String[num];
+		for(int i=0;i<num;i++)
+		{
+			Obstacle box = new Obstacle((rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateFromAngle((float)Math.PI*2*rd.nextFloat(), rd.nextFloat()*120+30, rd.nextFloat()*120+30));
+			em.register(box.getId(), box);
+			obsID[i] = box.getId();
 		}
 		
-
+		
 	}
 }

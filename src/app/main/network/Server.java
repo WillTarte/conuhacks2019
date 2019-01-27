@@ -1,5 +1,6 @@
 package app.main.network;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -387,7 +388,7 @@ public class Server extends Thread{
 					car.setPos(new Vector(x, y));
 					car.setRotation((float)angle);
  				}else{
- 					em.register(id, new Car(100, 100, x, y, id, Maths.generateFromAngle((float)angle, 30, 60)));
+ 					em.register(id, new Car(100, x, y, id, Maths.generateFromAngle((float)angle, 30, 60),new Color(0,0,255)));
  				}
 				
 			}

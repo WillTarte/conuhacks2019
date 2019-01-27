@@ -29,11 +29,14 @@ public class Boost extends Entity{
 	public void render(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		
-		g2d.setColor(Color.GREEN);
+		g2d.setColor(new Color(0, 139, 0));
 		Polygon toRender = new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 		Vector screenCoords = Maths.convert2screen(this.pos);
 		toRender.translate((int)screenCoords.getX(), (int)screenCoords.getY());
 		g2d.fill(toRender);
+		
+		g2d.setColor(Color.BLACK);
+		g2d.draw(toRender);
 		
 	}
 	

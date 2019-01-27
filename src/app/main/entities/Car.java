@@ -11,8 +11,6 @@ import app.main.utils.Vector;
 public class Car extends Entity{
 	
 	private int hitpoints;
-	private int armor;
-	private Vector forward;
 	private Vector lastpos;
 	private float lastangle;
 	
@@ -25,30 +23,32 @@ public class Car extends Entity{
 	
 	private double HALF_WIDTH;
 	
+	private Color color;
+	
 	
 	private final static float speed = 0.005f;
 	
-	public Car(int hp, int armor, double x, double y, String id, Polygon rect) {
+	public Car(int hp, double x, double y, String id, Polygon rect, Color color) {
 		super(1, x, y, id, rect);
 		this.hitpoints = hp;
-		this.armor = armor;
 		this.scale = 30.0f;
 		this.theta = 0.0f;
 		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 		this.rotationVelocity = 0;
 		this.velocity = 0.0f;
+		this.color = color;
 	}
 	
-	public Car(int hp, int armor, double x, double y, Polygon rect) {
+	public Car(int hp, double x, double y, Polygon rect, Color color) {
 		super(1, x, y, rect);
 		this.hitpoints = hp;
-		this.armor = armor;
 		this.scale = 30.0f;
 		this.theta = 0.0f;
 		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 		this.rotationVelocity = 0;
 		this.velocity = 0.0f;
 		this.HALF_WIDTH = this.pos.getX() + this.rect.xpoints[0];
+		this.color = color;
 	}
 
 	public void update() {
@@ -63,12 +63,15 @@ public class Car extends Entity{
 	public void render(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(color);
 		Polygon toRender = new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 		Vector screenCoords = Maths.convert2screen(this.pos);
 		toRender.translate((int)screenCoords.getX(), (int)screenCoords.getY());
 		
 		g2d.fill(toRender);
+		
+		g2d.setColor(Color.BLACK);
+		g2d.draw(toRender);
 	}
 	
 	public void setRotation(float angle) {

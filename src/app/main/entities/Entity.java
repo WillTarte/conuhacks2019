@@ -60,7 +60,7 @@ public abstract class Entity {
 	 * @return the pos
 	 */
 	public Vector getPos() {
-		return pos;
+		return new Vector(pos.getX(), pos.getY());
 	}
 
 	/**
