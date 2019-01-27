@@ -168,7 +168,7 @@ public class Game extends Canvas implements Runnable{
 				
 				a.intersect(new Area(player));
 				if(!a.isEmpty()) {
-					
+					playerCar.setScale(playerCar.getScale() + 10f);
 					em.remove(id);
 					break;
 				}
@@ -215,7 +215,7 @@ public class Game extends Canvas implements Runnable{
 		em.register(box.getId(), box);
 		
 		try {
-			client = new Client(InetAddress.getByName("192.168.42.203"), 42353, "player", em);
+			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
 			while(!client.connected());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
