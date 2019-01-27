@@ -22,11 +22,11 @@ public class Obstacle extends Entity{
 	public void render(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
 		
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(Color.GRAY);
 		Polygon toRender = new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 		Vector screenCoords = Maths.convert2screen(this.pos);
 		toRender.translate((int)screenCoords.getX(), (int)screenCoords.getY());
-		g2d.draw(toRender);
+		g2d.fill(toRender);
 	}
 
 	@Override
