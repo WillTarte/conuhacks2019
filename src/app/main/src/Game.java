@@ -236,7 +236,7 @@ public class Game extends Canvas implements Runnable{
 		
 		try {
 			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
-			while(!client.connected());
+			//while(!client.connected());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
