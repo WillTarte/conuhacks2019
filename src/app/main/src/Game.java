@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import app.main.entities.Boost;
 import app.main.entities.Car;
 import app.main.entities.Entity;
 import app.main.entities.EntityManager;
@@ -119,35 +120,52 @@ public class Game extends Canvas implements Runnable{
 	private void tick() {
 		
 		HashMap<String, Entity> map = em.getEntityMap();
-		for(String id:map.keySet()) 
+		
+		Car playerCar = em.getPlayer();
+		Polygon player = em.getPlayer().getShape();
+		Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
+		player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
+		
+		for(String id:map.keySet())
+			//car obstacle collision
 			if(map.get(id).getType() == 0) {
 				Polygon obstacle = map.get(id).getShape();
 				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
 				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
 				Area a = new Area(obstacle);
 				
-				Car playerCar = em.getPlayer();
-				Polygon player = em.getPlayer().getShape();
-				Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
-				player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
+				
+				
 				a.intersect(new Area(player));
 				if (!a.isEmpty()) {
 					if(em.getPlayer().getVelocity()>0) 
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2, new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
-						
+						playerCar.setPos(playerCar.getLastpos());
+						//playerCar.setRotation(playerCar.getLastangle());
 					}
 					else if (em.getPlayer().getVelocity()<0)
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
-						
+						playerCar.setPos(playerCar.getLastpos());
+						//playerCar.setRotation(playerCar.getLastangle());
+					}
+					
+					else if (em.getPlayer().getVelocity() == 0)
+					{
+						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
+						//playerCar.setRotation(playerCar.getLastangle());
 					}
 			}
 		
-		em.update();
+				
 			}
+			/*else if(map.get(id).getType() == 2) {
+				em.remove(id);
+				continue;
+			}*/
 		
-		
+		em.update();
 		// GAME LOGIC GOES HERE
 		
 	}
@@ -176,9 +194,14 @@ public class Game extends Canvas implements Runnable{
 		
 		Car car = new Car(2000, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
 		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
+		Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
+		Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
+		Boost boost1 = new Boost(0.2, 0.8, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
+		
 		Input input = new Input(car);
 		this.addMouseListener(input);
 		this.addKeyListener(input);
+		
 		em.setPlayer(car);
 		em.register(box.getId(), box);
 		
@@ -189,5 +212,8 @@ public class Game extends Canvas implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		em.register(box2.getId(), box2);
+		em.register(box3.getId(), box3);
+		em.register(boost1.getId(), boost1);
 	}
 }

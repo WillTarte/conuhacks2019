@@ -23,16 +23,16 @@ public class Input implements KeyListener, MouseListener{
 		//down arrow 40
 		int code = arg0.getKeyCode();
 		if(code == 38) {
-			player.setVelocity(1);
+			player.setVelocity(2);
 		}
 		else if(code == 40){
-			player.setVelocity(-1);
+			player.setVelocity(-2);
 		}
 		else if(code == 39) {
-			player.setRotationVelocity(0.03f);
+			player.setRotationVelocity(0.05f);
 		}
 		else if(code == 37) {
-			player.setRotationVelocity(-0.03f);
+			player.setRotationVelocity(-0.05f);
 		}
 		
 		

@@ -13,6 +13,8 @@ public class Car extends Entity{
 	private int hitpoints;
 	private int armor;
 	private Vector forward;
+	private Vector lastpos;
+	private float lastangle;
 	
 	private float velocity;
 	
@@ -36,7 +38,9 @@ public class Car extends Entity{
 	}
 
 	public void update() {
+		this.lastangle = this.theta;
 		this.setRotation(this.theta + this.rotationVelocity);
+		this.lastpos = this.pos;
 		this.pos = Vector.add(this.pos, Vector.scale(velocity * speed, new Vector(Math.sin(theta+Math.PI/2), Math.cos(theta+Math.PI/2))));
 		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 	}
@@ -48,7 +52,7 @@ public class Car extends Entity{
 		Polygon toRender = new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 		Vector screenCoords = Maths.convert2screen(this.pos);
 		toRender.translate((int)screenCoords.getX(), (int)screenCoords.getY());
-		g2d.draw(toRender);
+		g2d.fill(toRender);
 	}
 	
 	public void setRotation(float angle) {
@@ -84,5 +88,17 @@ public class Car extends Entity{
 	
 	public static float getSpeed() {
 		return Car.speed;
+	}
+
+	public Vector getLastpos() {
+		return lastpos;
+	}
+
+	public float getLastangle() {
+		return lastangle;
+	}
+
+	public void setLastangle(float lastangle) {
+		this.lastangle = lastangle;
 	}
 }
