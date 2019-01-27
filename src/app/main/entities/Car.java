@@ -21,6 +21,7 @@ public class Car extends Entity{
 	private float theta;
 	private float rotationVelocity;
 	
+	
 	private final static float speed = 0.005f;
 	
 	public Car(int hp, int armor, double x, double y, String id, Polygon rect) {
@@ -69,11 +70,19 @@ public class Car extends Entity{
 		this.velocity = vel;
 	}
 	
+	public float getVelocity() {
+		return this.velocity;
+	}
+	
 	public int getHP() {
 		return this.hitpoints;
 	}
 	
 	public void damage(int dmg) {
 		this.hitpoints -= dmg;
+	}
+	
+	public static float getSpeed() {
+		return Car.speed;
 	}
 }
