@@ -8,6 +8,8 @@ import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PublicKey;
 
+import app.main.entities.EntityManager;
+
 public class Client extends Thread{
 	
 	private static final int TICKS_PER_SECOND = 15;
@@ -32,14 +34,16 @@ public class Client extends Thread{
 	private volatile boolean connected = false;
 	private volatile boolean loggedIn = false;
 	
+	private EntityManager em;
 	
-	public Client(InetAddress host, int port, String username) throws Exception {
+	public Client(InetAddress host, int port, String username, EntityManager em) throws Exception {
 		this.host = host;
 		this.port = port;
 		this.username = username;
 		this.keys = RSA.generateKeyPair(Server.KEY_SIZE);
 		this.receiver = new Receiver(this.keys.getPrivate()).withCallback(this::processPacket);
 		this.socket = receiver.getSocket();
+		this.em = em;
 		this.receiver.start();
 		
 	}
@@ -70,7 +74,11 @@ public class Client extends Thread{
 			if(currentTick - lastTick >= 1000000000 / TICKS_PER_SECOND) {
 		
 				if(connected && loggedIn) {
-					sendPacket(Packet.INVALID, null, false);
+					String msg = "e|id=" + em.getPlayer().getId() + 
+							",x=" + em.getPlayer().getPos().getX() + 
+							",y=" + em.getPlayer().getPos().getY() + 
+							",ang=" + em.getPlayer().getRotation() + ";";
+					sendPacket(Packet.GAME_UPDATE, msg.getBytes(), true);
 					if(System.currentTimeMillis() - lastPacket >= TIMEOUT) {
 						connected = false;
 						loggedIn = false;

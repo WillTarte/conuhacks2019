@@ -6,7 +6,7 @@ public class Test {
 		
 		Server server = new Server()
 				.withPortRange(PortRange.create().from(42353).to(42360))
-				.withThreads(3)
+				.withThreads(4)
 				.init();
 		
 		long lastTick = System.nanoTime();
