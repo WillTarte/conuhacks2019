@@ -5,8 +5,8 @@ public class Test {
 	public static void main(String[] args) throws Exception {
 		
 		Server server = new Server()
-				.withPortRange(PortRange.create().from(42352).to(42360))
-				.withThreads(4)
+				.withPortRange(PortRange.create().from(42353).to(42360))
+				.withThreads(1)
 				.init();
 		
 		long lastTick = System.nanoTime();

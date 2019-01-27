@@ -26,7 +26,7 @@ public class Server extends Thread{
 	
 	private static final int TIMEOUT = 5000;
 	
-	private EntityManager em;
+	private EntityManager em = new EntityManager();
 	
 	/**
 	 * Client struct for the server to keep track of.
@@ -86,8 +86,9 @@ public class Server extends Thread{
 		
 		
 		for(int i = 0; i < workers.length; i++) {
-			workers[i] = new WorkerThread(begin == 0 ? begin : begin++, this.keys.getPrivate(), this::processPacket);
 			System.out.println(begin);
+			workers[i] = new WorkerThread(begin == 0 ? begin : begin++, this.keys.getPrivate(), this::processPacket);
+			
 			workers[i].start();
 		}
 		return this;
@@ -174,6 +175,7 @@ public class Server extends Thread{
 	}
 	
 	public void processPacket(PacketInfo packetInfo, WorkerThread worker) {
+		//System.out.println(packetInfo.packet.getType());
 		switch(packetInfo.packet.getType()) {
 			case Packet.CONNECT:
 				WorkerThread takesOver = getLeastChargedThread();
@@ -322,8 +324,6 @@ public class Server extends Thread{
 		if(packetInfo.packet.getContentLength() > 0)
 			counter++;
 		
-		
-		
 		// Update client's ping.
 		client.updateLatency(packetInfo.packet);
 		
@@ -353,29 +353,34 @@ public class Server extends Thread{
 		String msg = new String(packetInfo.packet.getContent());
 		String[] cmds = msg.split(";");
 		
-		for(String command :cmds)
+		
+		for(String command : cmds) {
+			
 			if(command.startsWith("e|")) {
-				String[] values = command.split("|")[1].split(",");
+				
+				String[] values = command.substring(2).split(",");
 				String id = "";
 				double x = 0, y = 0;
 				double angle = 0;
 				
+				
 				for(String value : values) {
-					switch(value.split("=")[0]) {
+					switch(value.split("\\=")[0]) {
 					case "id" :
-						id = value.split("=")[1];
+						id = value.split("\\=")[1];
 						break;
 					case "x" :
-						x = Double.parseDouble(value.split("=")[1]);
+						x = Double.parseDouble(value.split("\\=")[1]);
 						break;
 					case "y" :
-						y = Double.parseDouble(value.split("=")[1]);
+						y = Double.parseDouble(value.split("\\=")[1]);
 						break;
 					case "ang" : 
-						angle = Double.parseDouble(value.split("=")[1]);
+						angle = Double.parseDouble(value.split("\\=")[1]);
 						break;
 					}
 				}
+				
 				
 				if(em.getEntityMap().get(id) != null) {
 					Car car = (Car) em.getEntityMap().get(id);
@@ -386,11 +391,14 @@ public class Server extends Thread{
  				}
 				
 			}
+		}
 		
 		msg = "";
 		for(String eID : em.getEntityMap().keySet()) {
 			Entity player = em.getEntityMap().get(eID);
-			msg += "e|id=" + eID + ",x=" + player.getPos().getX() + ",y=" + player.getPos().getY() + ",ang=" + ((Car)player).getRotation() + ";";
+			msg += "e|id=" + eID + ",x=" + Float.toString((float)player.getPos().getX()) + 
+					",y=" + Float.toString((float)player.getPos().getY()) + 
+					",ang=" + Float.toString((float)((Car)player).getRotation()) + ";";
 		}
 		sendPacket(packetInfo, Packet.GAME_UPDATE, msg.getBytes(), socket);
 	}
