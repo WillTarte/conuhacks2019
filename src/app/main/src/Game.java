@@ -112,17 +112,27 @@ public class Game extends Canvas implements Runnable{
 				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
 				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
 				Area a = new Area(obstacle);
-			
+				
+				Car playerCar = em.getPlayer();
 				Polygon player = em.getPlayer().getShape();
 				Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
 				player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
 				a.intersect(new Area(player));
 				if (!a.isEmpty()) {
-					em.getPlayer().setVelocity(-0.1f);
-				}
+					if(em.getPlayer().getVelocity()>0) 
+					{
+						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2, new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
+						
+					}
+					else if (em.getPlayer().getVelocity()<0)
+					{
+						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
+						
+					}
 			}
 		
 		em.update();
+			}
 		
 		
 		// GAME LOGIC GOES HERE
