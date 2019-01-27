@@ -126,7 +126,7 @@ public class Game extends Canvas implements Runnable{
 		Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
 		player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
 		
-		System.out.println(playerCar.getPos().getX());
+
 		if (playerCar.getPos().getX() < (-16.0/9.0)) 
 			{
 				playerCar.setPos((new Vector((-16.0/9), playerCar.getPos().getY())));
@@ -160,19 +160,20 @@ public class Game extends Canvas implements Runnable{
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2, new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
 						playerCar.setPos(playerCar.getLastpos());
-						//playerCar.setRotation(playerCar.getLastangle());
+						playerCar.setRotation(playerCar.getLastangle());
 					}
 					else if (em.getPlayer().getVelocity()<0)
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
 						playerCar.setPos(playerCar.getLastpos());
-						//playerCar.setRotation(playerCar.getLastangle());
+						playerCar.setRotation(playerCar.getLastangle());
 					}
 					
 					else if (em.getPlayer().getVelocity() == 0)
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
-						//playerCar.setRotation(playerCar.getLastangle());
+						playerCar.setPos(playerCar.getLastpos());
+						playerCar.setRotation(playerCar.getLastangle());
 					}
 			}
 		
@@ -187,7 +188,7 @@ public class Game extends Canvas implements Runnable{
 				a.intersect(new Area(player));
 				if(!a.isEmpty()) {
 
-					playerCar.setScale(playerCar.getScale() + 10f);
+					playerCar.setScale(playerCar.getScale() + 20f);
 
 					em.remove(id);
 					break;
@@ -226,6 +227,7 @@ public class Game extends Canvas implements Runnable{
 		Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
 		Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
 		Boost boost1 = new Boost(0.2, 0.8, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
+		Boost boost2 = new Boost(0.7, 0.2, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
 		
 		Input input = new Input(car);
 		this.addMouseListener(input);
@@ -233,6 +235,11 @@ public class Game extends Canvas implements Runnable{
 		
 		em.setPlayer(car);
 		em.register(box.getId(), box);
+		em.register(box2.getId(), box2);
+		em.register(box3.getId(), box3);
+		em.register(boost1.getId(), boost1);
+		em.register(boost2.getId(), boost2);
+
 		
 		try {
 			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
@@ -241,14 +248,7 @@ public class Game extends Canvas implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		em.register(box2.getId(), box2);
-		em.register(box3.getId(), box3);
-
-		System.out.println(box.getId());
-		System.out.println(box2.getId());
-
-		em.register(boost1.getId(), boost1);
-
+		
 
 	}
 }
