@@ -267,6 +267,7 @@ public class Game extends Canvas implements Runnable{
 		em.register(boost2.getId(), boost2);
 
 		
+		
 		try {
 			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
 		} catch (Exception e) {
