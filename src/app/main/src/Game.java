@@ -25,6 +25,7 @@ public class Game extends Canvas implements Runnable{
 	
 	
 	private static final int TICKS_PER_SEC = 60;
+	private static final int NET_PER_SEC = 25;
 	
 	public static JFrame frame;
 	private static Thread gameThread;
@@ -73,8 +74,11 @@ public class Game extends Canvas implements Runnable{
 	public void run() {
 		init();
 		
+		
+		
 		int fps = 0, ticks = 0;
 		long lastTick = System.nanoTime();
+		long lastNet = System.nanoTime();
 		long lastTime = System.nanoTime();
 		while(running) {
 			
@@ -85,6 +89,12 @@ public class Game extends Canvas implements Runnable{
 				ticks++;
 				lastTick = currentTick;
 			} 
+			
+			// EVERY NETWORK TICK
+			long currentNet = System.nanoTime();
+			if(currentNet - lastNet >= 1000000000 / NET_PER_SEC) {
+				lastNet = currentNet;
+			}
 			
 			// EVERY SECOND
 			long currentTime = System.nanoTime();

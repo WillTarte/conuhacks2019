@@ -11,13 +11,22 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import app.main.entities.Car;
+import app.main.entities.Entity;
+import app.main.entities.EntityManager;
+import app.main.utils.Maths;
+import app.main.utils.Vector;
+
 public class Server extends Thread{
 	
 	public static final int KEY_SIZE = 4200;
 	private static final int MAX_CLIENTS = 20;
 	
+	private static final int TICKS_PER_SECOND = 20;
+	
 	private static final int TIMEOUT = 5000;
 	
+	private EntityManager em;
 	
 	/**
 	 * Client struct for the server to keep track of.
@@ -125,7 +134,7 @@ public class Server extends Thread{
 			}
 			
 			long currentTick = System.nanoTime();
-			if(currentTick - lastTick >= 1000000000 / 60) {
+			if(currentTick - lastTick >= 1000000000 / TICKS_PER_SECOND) {
 				
 				tickClients();
 				
@@ -162,7 +171,6 @@ public class Server extends Thread{
 				System.out.println(clients[i] + " timed out.");
 				disconnect(i, "Connection timed out.", workers[0].socket);
 			}
-		
 	}
 	
 	public void processPacket(PacketInfo packetInfo, WorkerThread worker) {
@@ -182,6 +190,9 @@ public class Server extends Thread{
 				break;
 			case Packet.INVALID:
 				processInvalidPacket(packetInfo, worker.socket);
+				break;
+			case Packet.GAME_UPDATE:
+				processGameUpdate(packetInfo, worker.socket);
 				break;
 			default:
 				SClient client = getClient(packetInfo.source, packetInfo.port);
@@ -325,6 +336,63 @@ public class Server extends Thread{
 		// Reset timeout timer.
 		client.resetTimer();
 
+	}
+	
+	private void processGameUpdate(PacketInfo packetInfo, DatagramSocket socket) {
+		
+		if(packetInfo.packet.getType() != Packet.GAME_UPDATE)
+			return;
+		
+		SClient client = getClient(packetInfo.source, packetInfo.port);
+		if(client == null) 
+			return;
+		
+		// Reset timeout timer.
+		client.resetTimer();
+		
+		String msg = new String(packetInfo.packet.getContent());
+		String[] cmds = msg.split(";");
+		
+		for(String command :cmds)
+			if(command.startsWith("e|")) {
+				String[] values = command.split("|")[1].split(",");
+				String id = "";
+				double x = 0, y = 0;
+				double angle = 0;
+				
+				for(String value : values) {
+					switch(value.split("=")[0]) {
+					case "id" :
+						id = value.split("=")[1];
+						break;
+					case "x" :
+						x = Double.parseDouble(value.split("=")[1]);
+						break;
+					case "y" :
+						y = Double.parseDouble(value.split("=")[1]);
+						break;
+					case "ang" : 
+						angle = Double.parseDouble(value.split("=")[1]);
+						break;
+					}
+				}
+				
+				if(em.getEntityMap().get(id) != null) {
+					Car car = (Car) em.getEntityMap().get(id);
+					car.setPos(new Vector(x, y));
+					car.setRotation((float)angle);
+ 				}else{
+ 					em.register(id, new Car(100, 100, x, y, id, Maths.generateFromAngle((float)angle, 30, 60)));
+ 				}
+				
+			}
+		
+		msg = "";
+		for(String eID : em.getEntityMap().keySet()) {
+			Entity player = em.getEntityMap().get(eID);
+			msg += "e|id=" + eID + ",x=" + player.getPos().getX() + ",y=" + player.getPos().getY() + ",ang=" + ((Car)player).getRotation() + ";";
+		}
+		sendPacket(packetInfo, Packet.GAME_UPDATE, msg.getBytes(), socket);
 	}
 	
 	public static boolean sendPacket(SClient recipient, int type, byte[] data, DatagramSocket socket) {

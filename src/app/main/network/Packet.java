@@ -12,6 +12,7 @@ public class Packet {
 	public static final int DISCONNECT = 5;
 	public static final int PORT_REDIRECT = 6;
 	public static final int ACCEPT_CONNECTION = 7;
+	public static final int GAME_UPDATE = 8;
 	
 	public static final int BUFFER = 525;
 	
