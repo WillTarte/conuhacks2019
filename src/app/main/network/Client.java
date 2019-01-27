@@ -170,29 +170,33 @@ public class Client {
 		String msg = new String(packetInfo.packet.getContent());
 		String[] cmds = msg.split(";");
 		
-		for(String command :cmds)
+		for(String command : cmds) {
+			
 			if(command.startsWith("e|")) {
-				String[] values = command.split("|")[1].split(",");
+				
+				String[] values = command.substring(2).split(",");
 				String id = "";
 				double x = 0, y = 0;
 				double angle = 0;
 				
+				
 				for(String value : values) {
-					switch(value.split("=")[0]) {
+					switch(value.split("\\=")[0]) {
 					case "id" :
-						id = value.split("=")[1];
+						id = value.split("\\=")[1];
 						break;
 					case "x" :
-						x = Double.parseDouble(value.split("=")[1]);
+						x = Double.parseDouble(value.split("\\=")[1]);
 						break;
 					case "y" :
-						y = Double.parseDouble(value.split("=")[1]);
+						y = Double.parseDouble(value.split("\\=")[1]);
 						break;
 					case "ang" : 
-						angle = Double.parseDouble(value.split("=")[1]);
+						angle = Double.parseDouble(value.split("\\=")[1]);
 						break;
 					}
 				}
+				
 				
 				if(em.getEntityMap().get(id) != null) {
 					Car car = (Car) em.getEntityMap().get(id);
@@ -203,6 +207,7 @@ public class Client {
  				}
 				
 			}
+		}
 	}
 	
 	public void connect() {
