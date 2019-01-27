@@ -112,4 +112,12 @@ public class Car extends Entity{
 	public void setLastangle(float lastangle) {
 		this.lastangle = lastangle;
 	}
+	
+	public void setScale(float f) {
+		this.scale = f;
+	}
+	
+	public float getScale() {
+		return this.scale;
+	}
 }

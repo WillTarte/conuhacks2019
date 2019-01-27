@@ -152,6 +152,24 @@ public class Game extends Canvas implements Runnable{
 		Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
 		player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
 		
+		System.out.println(playerCar.getPos().getX());
+		if (playerCar.getPos().getX() < (-16.0/9.0)) 
+			{
+				playerCar.setPos((new Vector((-16.0/9), playerCar.getPos().getY())));
+			}
+		else if (playerCar.getPos().getX() > (16.0/9.0)){
+			
+				playerCar.setPos((new Vector((16.0/9), playerCar.getPos().getY())));
+			}
+		if (playerCar.getPos().getY() > (1))
+			{
+				playerCar.setPos(new Vector(playerCar.getPos().getX(), 1));
+			}
+		else if (playerCar.getPos().getY() < (-1))
+			{
+				playerCar.setPos(new Vector(playerCar.getPos().getX(), -1));
+			}
+		
 		for(String id:map.keySet())
 			//car obstacle collision
 			if(map.get(id).getType() == 0) {
@@ -194,7 +212,9 @@ public class Game extends Canvas implements Runnable{
 				
 				a.intersect(new Area(player));
 				if(!a.isEmpty()) {
-					
+
+					playerCar.setScale(playerCar.getScale() + 10f);
+
 					em.remove(id);
 					break;
 				}
@@ -241,7 +261,7 @@ public class Game extends Canvas implements Runnable{
 		em.register(box.getId(), box);
 		
 		try {
-			client = new Client(InetAddress.getByName("localhost"), 42353, "player", em);
+			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -249,6 +269,12 @@ public class Game extends Canvas implements Runnable{
 		
 		em.register(box2.getId(), box2);
 		em.register(box3.getId(), box3);
+
+		System.out.println(box.getId());
+		System.out.println(box2.getId());
+
 		em.register(boost1.getId(), boost1);
+
+
 	}
 }
