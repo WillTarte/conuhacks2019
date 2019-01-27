@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import app.main.entities.Boost;
 import app.main.entities.Car;
 import app.main.entities.Entity;
 import app.main.entities.EntityManager;
@@ -117,6 +118,11 @@ public class Game extends Canvas implements Runnable{
 		
 		HashMap<String, Entity> map = em.getEntityMap();
 		
+		Car playerCar = em.getPlayer();
+		Polygon player = em.getPlayer().getShape();
+		Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
+		player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
+		
 		for(String id:map.keySet())
 			//car obstacle collision
 			if(map.get(id).getType() == 0) {
@@ -125,10 +131,7 @@ public class Game extends Canvas implements Runnable{
 				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
 				Area a = new Area(obstacle);
 				
-				Car playerCar = em.getPlayer();
-				Polygon player = em.getPlayer().getShape();
-				Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
-				player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
+				
 				
 				a.intersect(new Area(player));
 				if (!a.isEmpty()) {
@@ -154,6 +157,10 @@ public class Game extends Canvas implements Runnable{
 		
 				
 			}
+			/*else if(map.get(id).getType() == 2) {
+				em.remove(id);
+				continue;
+			}*/
 		
 		em.update();
 		// GAME LOGIC GOES HERE
@@ -186,16 +193,17 @@ public class Game extends Canvas implements Runnable{
 		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
 		Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
 		Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
+		Boost boost1 = new Boost(0.2, 0.8, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
+		
 		Input input = new Input(car);
 		this.addMouseListener(input);
 		this.addKeyListener(input);
+		
 		em.setPlayer(car);
 		em.register(box.getId(), box);
 		em.register(box2.getId(), box2);
 		em.register(box3.getId(), box3);
-		System.out.println(box.getId());
-		System.out.println(box2.getId());
-		
+		em.register(boost1.getId(), boost1);
 		
 	}
 }
