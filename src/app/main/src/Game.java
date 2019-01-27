@@ -9,6 +9,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -34,6 +35,10 @@ public class Game extends Canvas implements Runnable{
 	public static JFrame frame;
 	private static Thread gameThread;
 	private static boolean running = false;
+	
+	private Random rd = new Random();
+	
+	private int count = 0;
 	
 	public static void main(String[] args) {
 		
@@ -90,7 +95,7 @@ public class Game extends Canvas implements Runnable{
 			// EVERY TICK
 			long currentTick = System.nanoTime();
 			if(currentTick - lastTick >= 1000000000 / TICKS_PER_SEC) {
-				tick();
+				tick(ticks);
 				ticks++;
 				lastTick = currentTick;
 			} 
@@ -143,9 +148,22 @@ public class Game extends Canvas implements Runnable{
 		stopGame();
 	}
 	
-	private void tick() {
+	private void tick(int currentTick) {
 		
 		HashMap<String, Entity> map = em.getEntityMap();
+		
+		if(currentTick == 0)
+			count++;
+		
+		if(count == 3) {
+			Car ennemy = new Car(100, 100, (rd.nextDouble()-0.5)*32/9, (rd.nextDouble()-0.5)*2, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
+			
+			em.register(ennemy.getId(), ennemy);
+			count = 0;
+		}
+	
+		
+		
 		
 		Car playerCar = em.getPlayer();
 		Polygon player = em.getPlayer().getShape();
@@ -170,17 +188,21 @@ public class Game extends Canvas implements Runnable{
 				playerCar.setPos(new Vector(playerCar.getPos().getX(), -1));
 			}
 		
-		for(String id:map.keySet())
+		for(String id:map.keySet()) {
+			Entity ent = map.get(id);
+			
+			
+			if(playerCar.getId() == id)
+				continue;
+				
+			Polygon obstacle = ent.getShape();
+			Vector screenCoords = Maths.convert2screen(ent.getPos());
+			obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
+			Area a = new Area(obstacle);
+			a.intersect(new Area(player));
+			
 			//car obstacle collision
-			if(map.get(id).getType() == 0) {
-				Polygon obstacle = map.get(id).getShape();
-				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
-				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
-				Area a = new Area(obstacle);
-				
-				
-				
-				a.intersect(new Area(player));
+			if(ent.getType() == 0) {
 				if (!a.isEmpty()) {
 					if(em.getPlayer().getVelocity()>0) 
 					{
@@ -205,22 +227,37 @@ public class Game extends Canvas implements Runnable{
 		
 				
 			}
-			else if(map.get(id).getType() == 2) {
-				Polygon obstacle = map.get(id).getShape();
-				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
-				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
-				Area a = new Area(obstacle);
+			else if(ent.getType() == 2) {
 				
-				a.intersect(new Area(player));
+				
 				if(!a.isEmpty()) {
 
-					playerCar.setScale(playerCar.getScale() + 20f);
+					playerCar.heal(20);
 
 					em.remove(id);
 					break;
 				}
 			}
 		
+			else if(ent.getType() == 1) {
+				
+				if(!a.isEmpty()) {
+					playerCar.damage(30);
+					
+					em.remove(id);
+					break;
+				}
+				
+				//PATHFINDING BOYS
+				Vector diff = Vector.sub(playerCar.getPos(), ent.getPos());
+				double angle = diff.getX()<0?-diff.angle()+Math.PI:-diff.angle();				
+				((Car)ent).setRotation((float)angle);
+				((Car)ent).setVelocity(1f);
+				
+				
+			}
+				
+		}
 		em.update();
 		// GAME LOGIC GOES HERE
 		
@@ -240,6 +277,16 @@ public class Game extends Canvas implements Runnable{
 		// RENDER CODE GOES HERE
 		this.em.render(g);
 		
+		g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(20, frame.getContentPane().getHeight() - 80, frame.getContentPane().getWidth()/3, 50);
+		
+		g.setColor(Color.GREEN);
+		g.fillRect(20, frame.getContentPane().getHeight() - 80, frame.getContentPane().getWidth()* em.getPlayer().getHP()/300, 50);
+		
+		g.setColor(Color.BLACK);
+		g.drawRect(20, frame.getContentPane().getHeight() - 80, frame.getContentPane().getWidth()/3, 50);
+		
+
 		g.dispose();
 		bs.show();
 		
@@ -248,12 +295,13 @@ public class Game extends Canvas implements Runnable{
 	private void init() {
 		//load levels here
 		
-		Car car = new Car(2000, 100, 0, 0, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
+		Car car = new Car(100, 100, 0, 0, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
 		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
 		Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
 		Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
 		Boost boost1 = new Boost(0.2, 0.8, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
 		Boost boost2 = new Boost(0.7, 0.2, Maths.generateFromAngle((float)Math.PI/4, 20.0f, 20.0f));
+		
 		
 		Input input = new Input(car);
 		this.addMouseListener(input);

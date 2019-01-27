@@ -47,7 +47,7 @@ public class Vector {
 	public double angle() {
 		double x = this.x;
 		double y = this.y;
-		double angle = Math.atan(y/x)*(Math.PI/180);
+		double angle = Math.atan(y/x);
 		return angle;
 	}
 	

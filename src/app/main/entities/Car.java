@@ -67,6 +67,7 @@ public class Car extends Entity{
 		Polygon toRender = new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 		Vector screenCoords = Maths.convert2screen(this.pos);
 		toRender.translate((int)screenCoords.getX(), (int)screenCoords.getY());
+		
 		g2d.fill(toRender);
 	}
 	
@@ -127,5 +128,11 @@ public class Car extends Entity{
 
 	public double getHALF_WIDTH() {
 		return HALF_WIDTH;
+	}
+	
+	public void heal(int hp) {
+		this.hitpoints += hp;
+		if (this.hitpoints >100)
+			this.hitpoints = 100;
 	}
 }
