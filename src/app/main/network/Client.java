@@ -8,7 +8,10 @@ import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PublicKey;
 
+import app.main.entities.Car;
 import app.main.entities.EntityManager;
+import app.main.utils.Maths;
+import app.main.utils.Vector;
 
 public class Client extends Thread{
 	
@@ -109,6 +112,10 @@ public class Client extends Thread{
 		}
 		
 	}
+	
+	public boolean connected() {
+		return connected && loggedIn;
+	}
 
 	public void processPacket(PacketInfo packetInfo) {
 		if(packetInfo == null) 
@@ -131,6 +138,9 @@ public class Client extends Thread{
 				processRedirect(packetInfo);
 				break;
 				
+			case Packet.GAME_UPDATE:
+				processGameUpdate(packetInfo);
+				break;
 		}
 		
 	}
@@ -214,6 +224,49 @@ public class Client extends Thread{
 		
 		this.port = newPort;
 
+	}
+	
+	private void processGameUpdate(PacketInfo packetInfo) {
+		
+		if(packetInfo.packet.getType() != Packet.GAME_UPDATE) 
+			return;
+		
+		String msg = new String(packetInfo.packet.getContent());
+		String[] cmds = msg.split(";");
+		
+		for(String command :cmds)
+			if(command.startsWith("e|")) {
+				String[] values = command.split("|")[1].split(",");
+				String id = "";
+				double x = 0, y = 0;
+				double angle = 0;
+				
+				for(String value : values) {
+					switch(value.split("=")[0]) {
+					case "id" :
+						id = value.split("=")[1];
+						break;
+					case "x" :
+						x = Double.parseDouble(value.split("=")[1]);
+						break;
+					case "y" :
+						y = Double.parseDouble(value.split("=")[1]);
+						break;
+					case "ang" : 
+						angle = Double.parseDouble(value.split("=")[1]);
+						break;
+					}
+				}
+				
+				if(em.getEntityMap().get(id) != null) {
+					Car car = (Car) em.getEntityMap().get(id);
+					car.setPos(new Vector(x, y));
+					car.setRotation((float)angle);
+ 				}else{
+ 					em.register(id, new Car(100, 100, x, y, id, Maths.generateFromAngle((float)angle, 30, 60)));
+ 				}
+				
+			}
 	}
 	
 	private void connect() {
