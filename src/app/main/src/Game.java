@@ -247,7 +247,7 @@ public class Game extends Canvas implements Runnable{
 	private void init() {
 		//load levels here
 		
-		Car car = new Car(2000, 100, 0, 0, "abc", Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
+		Car car = new Car(2000, 100, 0, 0, Maths.generateFromAngle((float)Math.PI / 4, 30.0f, 60.0f));
 		Obstacle box = new Obstacle(0.5, 0.5, Maths.generateFromAngle((float)Math.PI / 4, 60.0f, 30.0f));
 		Obstacle box2 = new Obstacle(-0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
 		Obstacle box3 = new Obstacle(0.5, -0.5, Maths.generateFromAngle((float)Math.PI/4, 60.0f, 30.0f));
