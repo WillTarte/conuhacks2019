@@ -119,19 +119,28 @@ public class Game extends Canvas implements Runnable{
 				player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
 				a.intersect(new Area(player));
 				if (!a.isEmpty()) {
+
 					if(em.getPlayer().getVelocity()>0) 
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2, new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
-						
+						playerCar.setPos(playerCar.getLastpos());
+						//playerCar.setRotation(playerCar.getLastangle());
 					}
 					else if (em.getPlayer().getVelocity()<0)
 					{
 						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
-						
+						playerCar.setPos(playerCar.getLastpos());
+						//playerCar.setRotation(playerCar.getLastangle());
+					}
+					
+					else if (em.getPlayer().getVelocity() == 0)
+					{
+						playerCar.setPos(Vector.add(playerCar.getPos(), Vector.scale(-playerCar.getVelocity() * Car.getSpeed()*2 , new Vector(Math.sin(playerCar.getRotation()+Math.PI/2), Math.cos(playerCar.getRotation()+Math.PI/2)))));
+						//playerCar.setRotation(playerCar.getLastangle());
 					}
 			}
 		
-		em.update();
+				em.update();
 			}
 		
 		
