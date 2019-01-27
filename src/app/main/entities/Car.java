@@ -52,7 +52,7 @@ public class Car extends Entity{
 		Polygon toRender = new Polygon(this.rect.xpoints, this.rect.ypoints, this.rect.npoints);
 		Vector screenCoords = Maths.convert2screen(this.pos);
 		toRender.translate((int)screenCoords.getX(), (int)screenCoords.getY());
-		g2d.draw(toRender);
+		g2d.fill(toRender);
 	}
 	
 	public void setRotation(float angle) {

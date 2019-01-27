@@ -20,6 +20,11 @@ public class EntityManager {
 				entityMap.remove(eID);
 	}
 	
+	public void remove(String id) {
+		entityMap.remove(id);
+	}
+	
+	
 	public void render(Graphics g) {
 		//player.render(g);
 		for(String eID : entityMap.keySet())
