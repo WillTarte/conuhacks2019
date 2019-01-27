@@ -123,6 +123,24 @@ public class Game extends Canvas implements Runnable{
 		Vector pScreenCoords = Maths.convert2screen(em.getPlayer().getPos());
 		player.translate((int)pScreenCoords.getX(), (int)pScreenCoords.getY());
 		
+		System.out.println(playerCar.getPos().getX());
+		if (playerCar.getPos().getX() < (-16.0/9.0)) 
+			{
+				playerCar.setPos((new Vector((-16.0/9), playerCar.getPos().getY())));
+			}
+		else if (playerCar.getPos().getX() > (16.0/9.0)){
+			
+				playerCar.setPos((new Vector((16.0/9), playerCar.getPos().getY())));
+			}
+		if (playerCar.getPos().getY() > (1))
+			{
+				playerCar.setPos(new Vector(playerCar.getPos().getX(), 1));
+			}
+		else if (playerCar.getPos().getY() < (-1))
+			{
+				playerCar.setPos(new Vector(playerCar.getPos().getX(), -1));
+			}
+		
 		for(String id:map.keySet())
 			//car obstacle collision
 			if(map.get(id).getType() == 0) {
@@ -165,6 +183,8 @@ public class Game extends Canvas implements Runnable{
 				
 				a.intersect(new Area(player));
 				if(!a.isEmpty()) {
+					
+
 					
 					em.remove(id);
 					break;
@@ -218,6 +238,5 @@ public class Game extends Canvas implements Runnable{
 
 		em.register(boost1.getId(), boost1);
 
-		
 	}
 }
