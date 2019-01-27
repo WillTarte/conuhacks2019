@@ -23,6 +23,7 @@ public abstract class Entity {
 	
 	
 	public Entity(int type, double x, double y, String id, Polygon rect) {
+		this.type = type;
 		this.pos = new Vector(x, y);
 		this.id = id;
 		this.rect = rect;
@@ -30,7 +31,7 @@ public abstract class Entity {
 	}
 	
 	public Entity(int type, double x, double y, Polygon rect) {
-		
+		this.type = type;
 		this.pos = new Vector(x, y);
 		this.id = java.util.UUID.randomUUID().toString().split("-")[0];
 		this.rect = rect;

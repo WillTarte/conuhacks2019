@@ -21,19 +21,20 @@ public class EntityManager {
 	}
 	
 	public void render(Graphics g) {
-		player.render(g);
+		//player.render(g);
 		for(String eID : entityMap.keySet())
 			entityMap.get(eID).render(g);
 	}
 	
 	public void update() {
-		player.update();
+		//player.update();
 		for(String eID : entityMap.keySet())
 			entityMap.get(eID).update();
 	}
 	
 	public void setPlayer(Car p) {
 		this.player = p;
+		this.register(p.getId(), p);
 	}
 	
 	public Car getPlayer() {
