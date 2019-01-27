@@ -160,10 +160,19 @@ public class Game extends Canvas implements Runnable{
 		
 				
 			}
-			/*else if(map.get(id).getType() == 2) {
-				em.remove(id);
-				continue;
-			}*/
+			else if(map.get(id).getType() == 2) {
+				Polygon obstacle = map.get(id).getShape();
+				Vector screenCoords = Maths.convert2screen(map.get(id).getPos());
+				obstacle.translate((int)screenCoords.getX(), (int)screenCoords.getY());
+				Area a = new Area(obstacle);
+				
+				a.intersect(new Area(player));
+				if(!a.isEmpty()) {
+					
+					em.remove(id);
+					break;
+				}
+			}
 		
 		em.update();
 		// GAME LOGIC GOES HERE
