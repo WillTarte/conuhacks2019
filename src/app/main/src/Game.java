@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.awt.image.BufferStrategy;
+import java.net.InetAddress;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
@@ -15,6 +16,7 @@ import app.main.entities.Boost;
 import app.main.entities.Car;
 import app.main.entities.Entity;
 import app.main.entities.EntityManager;
+import app.main.network.Client;
 import app.main.utils.Input;
 import app.main.utils.Maths;
 import app.main.utils.Vector;
@@ -68,6 +70,7 @@ public class Game extends Canvas implements Runnable{
 	
 	
 	EntityManager em = new EntityManager();
+	Client client;
 	
 	
 	
@@ -183,9 +186,9 @@ public class Game extends Canvas implements Runnable{
 				
 				a.intersect(new Area(player));
 				if(!a.isEmpty()) {
-					
 
-					
+					playerCar.setScale(playerCar.getScale() + 10f);
+
 					em.remove(id);
 					break;
 				}
@@ -230,6 +233,14 @@ public class Game extends Canvas implements Runnable{
 		
 		em.setPlayer(car);
 		em.register(box.getId(), box);
+		
+		try {
+			client = new Client(InetAddress.getByName("172.30.181.242"), 42353, "player", em);
+			while(!client.connected());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		em.register(box2.getId(), box2);
 		em.register(box3.getId(), box3);
 
@@ -237,6 +248,7 @@ public class Game extends Canvas implements Runnable{
 		System.out.println(box2.getId());
 
 		em.register(boost1.getId(), boost1);
+
 
 	}
 }
