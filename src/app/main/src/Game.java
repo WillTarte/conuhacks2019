@@ -276,15 +276,5 @@ public class Game extends Canvas implements Runnable{
 		}
 		
 
-		em.register(box2.getId(), box2);
-		em.register(box3.getId(), box3);
-
-		System.out.println(box.getId());
-		System.out.println(box2.getId());
-
-		em.register(boost1.getId(), boost1);
-
-
-
 	}
 }
