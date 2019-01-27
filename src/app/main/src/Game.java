@@ -188,6 +188,5 @@ public class Game extends Canvas implements Runnable{
 		em.setPlayer(car);
 		em.register(box.getId(), box);
 		
-		
 	}
 }
