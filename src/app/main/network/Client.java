@@ -13,13 +13,12 @@ import app.main.entities.EntityManager;
 import app.main.utils.Maths;
 import app.main.utils.Vector;
 
-public class Client extends Thread{
+public class Client {
 	
-	private static final int TICKS_PER_SECOND = 15;
-	private static final int TIMEOUT = 5000;
+	public static final int TIMEOUT = 5000;
 	
-	private InetAddress host;
-	private int port;
+	public InetAddress host;
+	public int port;
 	
 	private PublicKey serverKey;
 	
@@ -29,13 +28,11 @@ public class Client extends Thread{
 	
 	private String username;
 	
-	private long lastPacket;
-	private int ping = 0;
+	public long lastPacket;
+	public int ping = 0;
 	
-	private volatile boolean running = false;
-	
-	private volatile boolean connected = false;
-	private volatile boolean loggedIn = false;
+	public volatile boolean connected = false;
+	public volatile boolean loggedIn = false;
 	
 	private EntityManager em;
 	
@@ -51,68 +48,6 @@ public class Client extends Thread{
 		
 	}
 	
-	@Override
-	public void start() {
-		if(running) return;
-		this.running = true;
-		super.start();
-	}
-	
-	public void stopServer() {
-		if(!running) 
-			return;
-		running = false;
-		try {
-			join();
-		} catch (InterruptedException e) {}
-	}
-	
-	public void run() {
-		
-		long lastTime = System.nanoTime();
-		long lastTick = System.nanoTime();
-		while(running) {
-			
-			long currentTick = System.nanoTime();
-			if(currentTick - lastTick >= 1000000000 / TICKS_PER_SECOND) {
-		
-				if(connected && loggedIn) {
-					String msg = "e|id=" + em.getPlayer().getId() + 
-							",x=" + em.getPlayer().getPos().getX() + 
-							",y=" + em.getPlayer().getPos().getY() + 
-							",ang=" + em.getPlayer().getRotation() + ";";
-					sendPacket(Packet.GAME_UPDATE, msg.getBytes(), true);
-					if(System.currentTimeMillis() - lastPacket >= TIMEOUT) {
-						connected = false;
-						loggedIn = false;
-						System.out.println("Connection to " + host.toString() + " timed out.");
-					}
-				}
-				
-				
-				lastTick = currentTick;
-			}
-			
-			long currentTime = System.nanoTime();
-			if(currentTime - lastTime >= 1000000000) {
-
-				if(!connected)
-					connect();
-				else if(!loggedIn)
-					login();
-				else {
-					sendPacket(Packet.PING, null, false);
-					
-					System.out.println("Connected to " + host + ":" + port + " (" + ping + " ms)");
-				}
-				
-				lastTime = currentTime;
-			}
-			
-		}
-		
-	}
-	
 	public boolean connected() {
 		return connected && loggedIn;
 	}
@@ -120,6 +55,7 @@ public class Client extends Thread{
 	public void processPacket(PacketInfo packetInfo) {
 		if(packetInfo == null) 
 			return;
+		
 		switch(packetInfo.packet.getType()) {
 		
 			case Packet.ACCEPT_CONNECTION:
@@ -145,7 +81,7 @@ public class Client extends Thread{
 		
 	}
 	
-	private boolean sendPacket(int type, byte[] data, boolean encrypted) {
+	public boolean sendPacket(int type, byte[] data, boolean encrypted) {
 		
 		if(serverKey == null)
 			encrypted = false;
@@ -269,14 +205,14 @@ public class Client extends Thread{
 			}
 	}
 	
-	private void connect() {
+	public void connect() {
 		
 		// Send unencrypted connect packet to server with our public key.
 		sendPacket(Packet.CONNECT, keys.getPublic().getEncoded(), false);
 		
 	}
 	
-	private void login() {
+	public void login() {
 		
 		// Send encrypted login packet to server with our username.
 		sendPacket(Packet.LOGIN, username.getBytes(), true);

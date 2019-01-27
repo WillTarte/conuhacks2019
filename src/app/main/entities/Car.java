@@ -36,6 +36,17 @@ public class Car extends Entity{
 		this.rotationVelocity = 0;
 		this.velocity = 0.0f;
 	}
+	
+	public Car(int hp, int armor, double x, double y, Polygon rect) {
+		super(1, x, y, rect);
+		this.hitpoints = hp;
+		this.armor = armor;
+		this.scale = 30.0f;
+		this.theta = 0.0f;
+		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
+		this.rotationVelocity = 0;
+		this.velocity = 0.0f;
+	}
 
 	public void update() {
 		this.lastangle = this.theta;

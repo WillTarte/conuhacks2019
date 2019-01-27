@@ -17,6 +17,7 @@ import app.main.entities.Car;
 import app.main.entities.Entity;
 import app.main.entities.EntityManager;
 import app.main.network.Client;
+import app.main.network.Packet;
 import app.main.utils.Input;
 import app.main.utils.Maths;
 import app.main.utils.Vector;
@@ -97,12 +98,37 @@ public class Game extends Canvas implements Runnable{
 			// EVERY NETWORK TICK
 			long currentNet = System.nanoTime();
 			if(currentNet - lastNet >= 1000000000 / NET_PER_SEC) {
+
+				if(client.connected()) {
+					String msg = "e|id=" + em.getPlayer().getId() + 
+							",x=" + Float.toString((float)em.getPlayer().getPos().getX()) + 
+							",y=" + Float.toString((float)em.getPlayer().getPos().getY()) + 
+							",ang=" + Float.toString((float)em.getPlayer().getRotation()) + ";";
+					client.sendPacket(Packet.GAME_UPDATE, msg.getBytes(), false);
+					if(System.currentTimeMillis() - client.lastPacket >= Client.TIMEOUT) {
+						client.connected = false;
+						client.loggedIn = false;
+						System.out.println("Connection to " + client.host.toString() + " timed out.");
+					}
+				}
+				
 				lastNet = currentNet;
 			}
 			
 			// EVERY SECOND
 			long currentTime = System.nanoTime();
 			if(currentTime - lastTime >= 1000000000) {
+				
+				if(!client.connected)
+					client.connect();
+				else if(!client.loggedIn)
+					client.login();
+				else {
+					client.sendPacket(Packet.PING, null, false);
+					
+					System.out.println("Connected to " + client.host + ":" + client.port + " (" + client.ping + " ms)");
+				}
+				
 				System.out.println("FPS : " + fps + ", TICKS : " + ticks);
 				fps = ticks = 0;
 				lastTime = currentTime;
@@ -215,12 +241,12 @@ public class Game extends Canvas implements Runnable{
 		em.register(box.getId(), box);
 		
 		try {
-			client = new Client(InetAddress.getByName("192.168.42.203"), 42353, "player", em);
-			while(!client.connected());
+			client = new Client(InetAddress.getByName("localhost"), 42353, "player", em);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		em.register(box2.getId(), box2);
 		em.register(box3.getId(), box3);
 		em.register(boost1.getId(), boost1);
