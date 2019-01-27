@@ -48,7 +48,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public static void main(String[] args) {
 		
-		frame = Display.create(1280, 720, "This is a game");
+		frame = Display.create(1280, 720, "Car Chase");
 		
 			
 		Game g = new Game();
