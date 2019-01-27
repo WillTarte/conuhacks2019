@@ -23,6 +23,8 @@ public class Car extends Entity{
 	private float theta;
 	private float rotationVelocity;
 	
+	private double HALF_WIDTH;
+	
 	
 	private final static float speed = 0.005f;
 	
@@ -46,6 +48,7 @@ public class Car extends Entity{
 		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 		this.rotationVelocity = 0;
 		this.velocity = 0.0f;
+		this.HALF_WIDTH = this.pos.getX() + this.rect.xpoints[0];
 	}
 
 	public void update() {
@@ -55,6 +58,7 @@ public class Car extends Entity{
 		this.pos = Vector.add(this.pos, Vector.scale(velocity * speed, new Vector(Math.sin(theta+Math.PI/2), Math.cos(theta+Math.PI/2))));
 		this.rect = Maths.generateFromAngle(theta, scale/2, scale);
 	}
+	
 	
 	public void render(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
@@ -119,5 +123,9 @@ public class Car extends Entity{
 	
 	public float getScale() {
 		return this.scale;
+	}
+
+	public double getHALF_WIDTH() {
+		return HALF_WIDTH;
 	}
 }
